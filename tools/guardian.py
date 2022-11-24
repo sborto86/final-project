@@ -57,6 +57,7 @@ def get_guardian_articles(query, datefrom=None, dateto=None):
         response = requests.get(url2)
     except:
         print("Network error please check your internet connection")
+        return []
     if response.status_code == 200:
         response = response.json()
         pages = response['response']['pages']
@@ -66,7 +67,6 @@ def get_guardian_articles(query, datefrom=None, dateto=None):
             for loop in tqdm(range((dfr-dto).days+1)):
                 parameters['from-date'] = f"{day.year}-{day.month}-{day.day}"
                 parameters['to-date'] = f"{day.year}-{day.month}-{day.day}"
-                day = day + datetime.timedelta(days=1)
                 url2 = url + urllib.parse.urlencode(parameters)            
                 try:
                     response = requests.get(url2)
@@ -77,6 +77,7 @@ def get_guardian_articles(query, datefrom=None, dateto=None):
                                 "query": query
                         }
                         articles.append(dic_)
+                        day = day + datetime.timedelta(days=1)
                     else: 
                         print(f"Unable to fully retrieve articles from {query}, stopped at {day.year}-{day.month}-{day.day}: Error {response.status_code}: {response.text}")
                         return articles
@@ -84,7 +85,8 @@ def get_guardian_articles(query, datefrom=None, dateto=None):
                         print("Network error please check your internet connection, stopped at {day.year}-{day.month}-{day.day}")
                         return articles
         else:
-            for i in tqdm(range(2, pages+1)):
+            dic_dates = {}
+            for i in tqdm(range(1, pages+1)):
                 parameters['page'] = i
                 url2 = url + urllib.parse.urlencode(parameters)
                 try:
@@ -92,23 +94,23 @@ def get_guardian_articles(query, datefrom=None, dateto=None):
                     if response.status_code == 200:
                         response = response.json()
                         results = response['response']['results']
-                        print(response['response'])
-                        dic_dates = {}
                         for e in results:
                             pubdate = e['webPublicationDate'].split("T")[0]
                             if pubdate in dic_dates:
                                 dic_dates[pubdate] +=1
                             else:
                                 dic_dates[pubdate] =1
-                        for dat, value in dic_dates.items():
-                            art = {
-                                "date": dat,
-                                "articles": value,
-                                "query": query
-                            }
-                            articles.append(art)
                     else: 
                         print(f"Unable to retrieve articles from page {i} of {query}: Error {response.status_code}: {response.text}")
                 except:
                     print("Network error please check your internet connection, Unable to retrieve articles from page {i} of {query}")
+            for dat, value in dic_dates.items():
+                art = {
+                        "date": dat,
+                        "articles": value,
+                        "query": query
+                        }
+                articles.append(art)
+    else:
+        print(f"There was a problem with your request, {response.status_code}: {response.reason}")    
     return articles
