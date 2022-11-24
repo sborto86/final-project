@@ -8,7 +8,6 @@ user = st.secrets["SQLUSER"]
 port = int(st.secrets["SQLPORT"])
 host = st.secrets["SQLHOST"]
 
-
 connectionData = f"mysql+mysqlconnector://{user}:{password}@{host}:{port}/{dbname}"
 engine = alch.create_engine(connectionData)
 

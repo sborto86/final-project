@@ -5,4 +5,4 @@ CREATE TABLE IF NOT EXISTS `gvolume` (
   `todate` DATE NOT NULL,
   `volumerank` TINYINT(1) NULL,
   PRIMARY KEY (`query`),
-  UNIQUE INDEX `query_UNIQUE` (`query` ASC) VISIBLE);
+  UNIQUE INDEX `query_UNIQUE` (`query` ASC));
