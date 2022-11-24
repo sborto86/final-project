@@ -3,9 +3,8 @@ if "requests" not in dir():
     import requests
 if "urllib" not in dir ():
     import urllib.parse
-from dotenv import load_dotenv
-if "os" not in dir():
-    import os
+if "st" not in dir():
+    import streamlit as st
 if "datetime" not in dir():
     import datetime
     from dateutil.relativedelta import relativedelta
@@ -14,9 +13,7 @@ from tqdm import tqdm
 
 ##### GETTING PASSWORDS
 
-env_path = (os.path.join("", ".env"))
-load_dotenv(env_path)
-GP = os.getenv("THE_GUARDIAN")
+GP = st.secrets["THE_GUARDIAN"]
 
 def get_guardian_articles(query, datefrom=None, dateto=None):
     '''

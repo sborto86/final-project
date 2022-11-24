@@ -3,13 +3,6 @@ from pytrends import dailydata
 if "datetime" not in dir():
     import datetime
     from dateutil.relativedelta import relativedelta
-    
-import _locale
-import googleads
-import pandas as pd
-import traceback
-from googleads import adwords
-from googleads import oauth2
 
 def google_trends(query, fr=None, to=None):
     '''
