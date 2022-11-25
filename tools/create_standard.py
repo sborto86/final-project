@@ -1,5 +1,5 @@
 ### FUNCTIONS TO ADD DATA TO THE STANDARD VOLUME TABLE
-from tools.sqlqueries import query_list, get_average, ins_average
+from tools.sqlqueries import query_list, get_average, ins_average, remove_duplicates
 from tools.google import trend_to_absolute
 if "datetime" not in dir():
     import datetime
@@ -24,6 +24,9 @@ def add_standard(ref, standard):
         duplicates = True
     # Getting reference data
     avg_dic = get_average(ref)
+    if not avg_dic:
+        ##### ERRROR HANDELING
+        return False
     # creating keywords list
     values = ""
     if standard:
@@ -32,13 +35,15 @@ def add_standard(ref, standard):
         df = trend_to_absolute(kws,avg_dic['avg'],avg_dic['fromdate'].strftime("%Y-%m-%d"),avg_dic['todate'].strftime("%Y-%m-%d"))
         for i,row in df.iterrows():
             values+=f"('{i.to_pydatetime().date()}',{row[standard]},'{standard}'),"
+        values = values[:-1]
+        values+=";"
         # adding average to gvolume table
         dif_date = relativedelta(avg_dic['todate'], avg_dic['fromdate'])
         months = dif_date.months
         if dif_date.days > 15:
          months+=1
-        sum_ = df[standard].sum()
-        ins_average(standard, df[standard].sum()/months, avg_dic['fromdate'].strftime("%Y-%m-%d"), avg_dic['todate'].strftime("%Y-%m-%d"))
+        print(df[standard].sum()/months)
+        ins_average(standard, int(df[standard].sum()/months), avg_dic['fromdate'].strftime("%Y-%m-%d"), avg_dic['todate'].strftime("%Y-%m-%d"))
     else: 
         kws = [ref]
         # creating rows to insert in the database
@@ -47,13 +52,12 @@ def add_standard(ref, standard):
             values+=f"('{i.to_pydatetime().date()}',{row[ref]},'{ref}'),"
         values = values[:-1]
         values+=";"
-        #SQL query
-        from config.sqlconnect import engine
-        query='''INSERT INTO `standardvolume` (`date`, `searchvolume`, `query`)
-                VALUES'''
-        query+=values
-        engine.execute(query)
-
-
-
-    
+    #SQL query
+    from config.sqlconnect import engine
+    query='''INSERT INTO `standardvolume` (`date`, `searchvolume`, `query`)
+            VALUES'''
+    query+=values
+    ########## ERROR HANDELING
+    engine.execute(query)
+    if duplicates:
+        remove_duplicates('standardvolume')

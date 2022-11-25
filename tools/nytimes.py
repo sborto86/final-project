@@ -13,10 +13,12 @@ if "tqdm" not in dir():
     from tqdm import tqdm
 if "ceil" not in dir():
     from math import ceil
+if "pd" not in dir():
+    import pandas as pd
 
 ##### GETTING PASSWORDS
 
-st.secrets["NYT"]
+NY = st.secrets["NYT"]
 
 def get_nyt_articles(query, datefrom=None, dateto=None):
     '''
@@ -52,7 +54,7 @@ def get_nyt_articles(query, datefrom=None, dateto=None):
     try:
         response = requests.get(url2)
     except:
-        print("Network error please check your internet connection")
+        ("Neprinttwork error please check your internet connection")
         return []
     if response.status_code == 200:
         response = response.json()
@@ -84,7 +86,6 @@ def get_nyt_articles(query, datefrom=None, dateto=None):
             for i in tqdm(range(0, pages)):
                 parameters['page'] = i
                 url2 = url + urllib.parse.urlencode(parameters)
-                print("pages: ", url2, "pages: ", pages)
                 try:
                     response = requests.get(url2)
                     if response.status_code == 200:
@@ -109,4 +110,14 @@ def get_nyt_articles(query, datefrom=None, dateto=None):
                 articles.append(art)       
     else:
         print(f"There was a problem with your request, {response.status_code}: {response.reason}")
-    return articles
+    df = pd.DataFrame(articles)
+    if len(df[df.date == datefrom])==0:
+        row = pd.DataFrame([{'date':datefrom, 'articles': 0, 'query':query}])
+        df = pd.concat([df,row], ignore_index=True)
+    if len(df[df.date == dateto])==0:
+        row = pd.DataFrame([{'date':dateto, 'articles': 0, 'query':query}])
+        df = pd.concat([df,row], ignore_index=True)
+    df = df.set_index(df['date'])
+    df.index = pd.DatetimeIndex(data=df.index)
+    df = df.resample('1D').mean().fillna(0)
+    return df

@@ -8,6 +8,8 @@ if "st" not in dir():
 if "datetime" not in dir():
     import datetime
     from dateutil.relativedelta import relativedelta
+if "pd" not in dir():
+    import pandas as pd
 from unidecode import unidecode
 from tqdm import tqdm
 
@@ -109,5 +111,15 @@ def get_guardian_articles(query, datefrom=None, dateto=None):
                         }
                 articles.append(art)
     else:
-        print(f"There was a problem with your request, {response.status_code}: {response.reason}")    
-    return articles
+        print(f"There was a problem with your request, {response.status_code}: {response.reason}") 
+    df = pd.DataFrame(articles)
+    if len(df[df.date == datefrom])==0:
+        row = pd.DataFrame([{'date':datefrom, 'articles': 0, 'query':query}])
+        df = pd.concat([df,row], ignore_index=True)
+    if len(df[df.date == dateto])==0:
+        row = pd.DataFrame([{'date':dateto, 'articles': 0, 'query':query}])
+        df = pd.concat([df,row], ignore_index=True)
+    df = df.set_index(df['date'])
+    df.index = pd.DatetimeIndex(data=df.index)
+    df = df.resample('1D').mean().fillna(0)
+    return df

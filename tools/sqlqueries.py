@@ -20,7 +20,11 @@ def get_average(rank):
     elif type(rank) == str:
         query+=f"WHERE query = '{rank}';"
     df = pd.read_sql_query(query, engine)
-    return df.to_dict(orient="records")[0]
+    result = df.to_dict(orient="records")
+    if result:
+        return df.to_dict(orient="records")[0]
+    else:
+        return False
 
 def ins_average(q, avg, fr, to, rank=None):
     '''
@@ -51,12 +55,16 @@ def ins_average(q, avg, fr, to, rank=None):
                 WHERE query = '{q}';      
             '''
     else:
+        if not rank:
+            rank = 'NULL'
+
         query=f'''
                 INSERT INTO `gvolume` (`query`, `avgsearch`, `fromdate`, `todate`, `volumerank`)
                 VALUES
                 ('{q}',{avg},'{fr}','{to}',{rank})
             '''
-    return f'{q} succesfully added to the database'
+    engine.execute(query)
+    return True
 
 def remove_duplicates(database):
     '''
@@ -93,3 +101,18 @@ def query_list(database):
     unique = engine.execute(query).fetchall()
     return [query for ls in unique for query in ls]
 
+def get_standard(rank):
+    ###### ADD DATE FILTER AND ERROR HANDELING
+    query =f'''
+    SELECT `date`, searchvolume, `query` 
+    FROM standardvolume
+    WHERE searchvolume  = 
+        (SELECT MAX(searchvolume) FROM
+            (SELECT `date`, searchvolume, gvolume.query, volumerank from standardvolume
+                JOIN gvolume
+                ON gvolume.query = standardvolume.query
+                WHERE gvolume.volumerank = {rank}) as ranktable)
+    ORDER BY `date` desc
+    LIMIT 1
+    '''
+    return engine.execute(query).fetchall()[0]

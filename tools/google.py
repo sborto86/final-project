@@ -28,7 +28,6 @@ def trend_to_absolute(kws, avg, fr, to):
         months+=1
     total_search = avg*months
     pytrend = TrendReq()
-    print(kws,fr,to)
     pytrend.build_payload(kw_list=kws, timeframe=f'{fr} {to}')
     df = pytrend.interest_over_time()
     rel=int(total_search/df[kws[0]].sum())
