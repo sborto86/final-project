@@ -77,10 +77,10 @@ def get_nyt_articles(query, datefrom=None, dateto=None):
                         day = day + datetime.timedelta(days=1)
                     else: 
                         print(f"Unable to fully retrieve articles from {query}, stopped at {day.year}-{day.month}-{day.day}: Error {response.status_code}: {response.text}")
-                        return articles
+                        pass
                 except:
                         print("Network error please check your internet connection, stopped at {day.year}-{day.month}-{day.day}")
-                        return articles
+                        pass
         else:
             dic_dates = {}
             for i in tqdm(range(0, pages)):

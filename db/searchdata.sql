@@ -5,5 +5,4 @@ CREATE TABLE IF NOT EXISTS `searchdata` (
   `google` INT NULL,
   `nyt` INT NULL,
   `guardian` INT NULL,
-  `relvolume` INT NULL,
   PRIMARY KEY (`idsearch`));

@@ -29,13 +29,13 @@ def get_guardian_articles(query, datefrom=None, dateto=None):
     '''
     articles = []
     if not dateto:
-        dto = datetime.datetime.now() - relativedelta(years=2)
+        dto = datetime.datetime.now()
         dateto = f"{dto.year}-{dto.month}-{dto.day}"
     else:
         d_ls = dateto.split("-")
         dto = datetime.datetime(int(d_ls[0]), int(d_ls[1]), int(d_ls[2]))
     if not datefrom:
-        dfr = datetime.datetime.now()
+        dfr = datetime.datetime.now() - relativedelta(years=2)
         datefrom = f"{dfr.year-2}-{dfr.month}-{dfr.day}"
     else:
         d_ls = datefrom.split("-")
