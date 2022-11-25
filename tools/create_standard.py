@@ -1,7 +1,9 @@
 ### FUNCTIONS TO ADD DATA TO THE STANDARD VOLUME TABLE
-from tools.sqlqueries import query_list, get_average
+from tools.sqlqueries import query_list, get_average, ins_average
 from tools.google import trend_to_absolute
-
+if "datetime" not in dir():
+    import datetime
+    from dateutil.relativedelta import relativedelta
 def add_standard(ref, standard):
     ref: str
     '''
@@ -30,6 +32,13 @@ def add_standard(ref, standard):
         df = trend_to_absolute(kws,avg_dic['avg'],avg_dic['fromdate'].strftime("%Y-%m-%d"),avg_dic['todate'].strftime("%Y-%m-%d"))
         for i,row in df.iterrows():
             values+=f"('{i.to_pydatetime().date()}',{row[standard]},'{standard}'),"
+        # adding average to gvolume table
+        dif_date = relativedelta(avg_dic['todate'], avg_dic['fromdate'])
+        months = dif_date.months
+        if dif_date.days > 15:
+         months+=1
+        sum_ = df[standard].sum()
+        ins_average(standard, df[standard].sum()/months, avg_dic['fromdate'].strftime("%Y-%m-%d"), avg_dic['todate'].strftime("%Y-%m-%d"))
     else: 
         kws = [ref]
         # creating rows to insert in the database
