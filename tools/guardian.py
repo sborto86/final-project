@@ -113,13 +113,12 @@ def get_guardian_articles(query, datefrom=None, dateto=None):
     else:
         print(f"There was a problem with your request, {response.status_code}: {response.reason}") 
     df = pd.DataFrame(articles)
-    if len(df[df.date == datefrom])==0:
-        row = pd.DataFrame([{'date':datefrom, 'articles': 0, 'query':query}])
-        df = pd.concat([df,row], ignore_index=True)
-    if len(df[df.date == dateto])==0:
-        row = pd.DataFrame([{'date':dateto, 'articles': 0, 'query':query}])
-        df = pd.concat([df,row], ignore_index=True)
+    if len(df)==0:
+        df["articles"] = [0,0]
+        df["date"]=[datefrom, dateto]
+    idx = pd.date_range(datefrom, dateto)
     df = df.set_index(df['date'])
     df.index = pd.DatetimeIndex(data=df.index)
-    df = df.resample('1D').mean().fillna(0)
+    df = df[["articles"]]
+    df = df.reindex(idx, fill_value=0)
     return df

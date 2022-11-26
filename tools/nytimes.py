@@ -15,12 +15,79 @@ if "ceil" not in dir():
     from math import ceil
 if "pd" not in dir():
     import pandas as pd
+if "engine" not in dir():
+    from config.sqlconnect import engine
 
 ##### GETTING PASSWORDS
 
 NY = st.secrets["NYT"]
 
+
 def get_nyt_articles(query, datefrom=None, dateto=None):
+    '''
+    Function that get the number of articles published in The New York Times the last 2 years for a given query
+    Arguments:
+        query: str. 
+                query to retreive the article number
+        datefrom(optional): str. (format: YYYY-DD-MM)
+        dateto(optional): str. (format: YYYY-DD-MM)
+    Returns: pd.DataFrame
+    '''
+    # Generating date variables
+    if not dateto:
+        dto = datetime.datetime.now() 
+        dateto = f"{dto.year}-{dto.month}-{dto.day}"
+    if not datefrom:
+        dfr = datetime.datetime.now() - relativedelta(years=2)
+        datefrom = f"{dfr.year}-{dfr.month}-01"
+    #Check if database is updated
+    engine.connect()
+    sqlquery = '''
+            SELECT MAX(`date`) FROM nytarchive
+            LIMIT 1'''
+    last_update = engine.execute(sqlquery).fetchall()[0][0]
+    today = datetime.date.today()
+    if today > last_update:
+        # Deleting records of the last update month
+        stdate = datetime.date(last_update.year,last_update.month,1)
+        sqlquery = f'''
+                    DELETE FROM nytarchive
+                    WHERE `date`
+                    BETWEEN '{last_update.year}-{last_update.month}-{last_update.day}' AND {stdate.year}-{stdate.month}-{stdate.day}
+        
+        '''
+        engine.execute(sqlquery)
+        # Updating
+        mo_update = today.month - last_update.month + 1
+        for i in range(mo_update):
+            url = f'https://api.nytimes.com/svc/archive/v1/{today.year}/{today.month}.json?api-key={NY}'
+            content = requests.get(url)
+            content = content.json()
+            news_list=[{"date": news['pub_date'].split("T")[0],"text": news['abstract']+news['headline']['main']+news['headline']['print_headline']+news['lead_paragraph']} for news in content["response"]["docs"]]
+            df = pd.DataFrame(news_list)
+            df['date'] = df["date"].astype('datetime64[ns]')
+            df.to_sql("nytarchive",engine, if_exists='append', method='multi')
+            today = today - relativedelta(months=1)
+    #quering the database
+    sqlquery = f'''SELECT `date`, COUNT(`text`) FROM nytarchive
+            WHERE `text` LIKE '%{query}%'
+            AND `date` BETWEEN '{datefrom}' AND '{dateto}'
+            GROUP BY `date`
+            '''
+    df = pd.read_sql(sqlquery,engine)
+    if len(df)==0:
+        df["articles"] = [0,0]
+        df["date"]=[datefrom, dateto]
+    idx = pd.date_range(datefrom, dateto)
+    df = df.set_index(df['date'])
+    df.index = pd.DatetimeIndex(data=df.index)
+    df.columns = ["date", "articles"]
+    df = df[["articles"]]
+    df = df.reindex(idx, fill_value=0)
+    return df
+
+#### DEPRECIATED FUNCTION BECAUSE QUERY QUOTA LIMIT
+def get_nyt_articles_old(query, datefrom=None, dateto=None):
     '''
     Function that get the number of articles published in The New York Times the last 2 years for a given query
     Arguments:

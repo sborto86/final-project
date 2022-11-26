@@ -10,6 +10,7 @@ if "datetime" not in dir():
 if "pd" not in dir():
     import pandas as pd
     from config.sqlconnect import engine
+    engine.connect()
 def find_standard(keyword):
     ############### ADD DOCUMENTATION
     '''
@@ -77,9 +78,9 @@ def add_keyword(keyword):
     df["query"] = keyword
     guardian = get_guardian_articles(keyword)
     guardian.columns = ["guardian"]
-    df.join(guardian)
+    df = df.join(guardian)
     nyt= get_nyt_articles(keyword)
     nyt.columns = ["nytimes"]
-    df.join(nyt)
+    df = df.join(nyt)
     df.to_sql("searchdata",engine,if_exists='append',index_label="date", method='multi')
-
+    return df

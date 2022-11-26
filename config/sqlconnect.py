@@ -30,7 +30,7 @@ if not insp.has_table('gvolume'):
         with open("db/basedata.sql") as file:
             query = alch.text(file.read())
             con.execute(query)
-if not insp.has_table('searchdata.sql'):
+if not insp.has_table('searchdata'):
     with engine.connect() as con:
         with open("db/searchdata.sql") as file:
             query = alch.text(file.read())
@@ -38,5 +38,10 @@ if not insp.has_table('searchdata.sql'):
 if not insp.has_table('standardvolume'):
     with engine.connect() as con:
         with open("db/standardvolume.sql") as file:
+            query = alch.text(file.read())
+            con.execute(query)
+if not insp.has_table('nytarchive'):
+    with engine.connect() as con:
+        with open("db/nytarchive.sql") as file:
             query = alch.text(file.read())
             con.execute(query)
