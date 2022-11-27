@@ -12,9 +12,15 @@ if "pd" not in dir():
     from config.sqlconnect import engine
     engine.connect()
 def find_standard(keyword):
-    ############### ADD DOCUMENTATION
     '''
-    
+    Find a keyword stored in the gvolume database that have similar search volume in google trends
+    Arguments:
+        keyword: str.
+            keyword to find a standard stored in the database
+    Returns: dic. {
+                    date: YYYY-MM-DD 
+                    volume: int.
+                    }        
     '''
     isstandard=False
     loop=0
@@ -47,9 +53,12 @@ def find_standard(keyword):
     return {'date': date_st, 'volume': kw_vol} 
 
 def get_google(keyword):
-    ################ADD DOCUMENTATION
     '''
-    
+    Retrives the estimated search volume for the last two years from now
+    Arguments: 
+        keyword: str.
+            keyword to calculate the search volume
+    Returns: pandas.DataFrame object.
     '''
     #getting time range 
     dfr = datetime.datetime.now() - relativedelta(years=2)
@@ -69,9 +78,13 @@ def get_google(keyword):
     return df 
 
 def add_keyword(keyword):
-    ################ADD DOCUMENTATION, ADD threaths
+    ################ ADD threaths
     '''
-    
+    Adds new keyword search volume to the search data database
+    Arguments: 
+        keyword: str.
+            keyword to be added in the database
+    Return: panadas.DataFrame
     '''
     df = get_google(keyword)
     df.columns = ["google"]
@@ -84,3 +97,62 @@ def add_keyword(keyword):
     df = df.join(nyt)
     df.to_sql("searchdata",engine,if_exists='append',index_label="date", method='multi')
     return df
+
+def update_keyword(keyword):
+    '''
+    Updates the data from a keyword already present in the database
+    Arguments:
+        keyword: str.
+            keyword to be updated
+    Returns: bool.
+    '''
+    try:
+        today = datetime.date.today()
+        engine.connect()
+        sqlquery = f'''
+            SELECT MAX(`date`) FROM searchdata
+            WHERE query = '{keyword}'
+            LIMIT 1'''
+        # getting dates for the queries
+        last_update = engine.execute(sqlquery).fetchall()[0][0]
+        today = datetime.date.today()
+        dfr = f'{last_update.year}-{last_update.month}-{last_update.day}'
+        dto = f'{today.year}-{today.month}-{today.day}'
+        laup= last_update - -datetime.timedelta(days=10)
+        dfr2 = f'{laup.year}-{laup.month}-{laup.day}'
+        if today-datetime.timedelta(days=7) > last_update:
+            # get search volume to standarize
+            sqlquery = f'''
+           SELECT `date`, google FROM searchdata
+            WHERE google = 
+                (SELECT MAX(google) FROM searchdata
+                WHERE `date` > '{dfr2}' AND query = '{keyword}')
+            AND
+            `date` > '{dfr2}'
+            LIMIT 1'''
+            standard = engine.execute(sqlquery).fetchall()[0]
+            pytrend = TrendReq()
+            pytrend.build_payload(kw_list=[keyword], timeframe=f'{dfr2} {dto}')
+            df = pytrend.interest_over_time()
+            if df[keyword][standard[0]] == 0:
+                rel_vol=[standard[1]]/0.9
+            else:
+                rel_vol = [standard[1]]/df[keyword][standard[0]]
+            df[keyword] = df[keyword].replace(to_replace=0, value = 0.9)
+            df[keyword] = df[keyword]*rel_vol
+            df[keyword] = df[keyword].astype(int)
+            df=df[[keyword]]
+            df = df[df.index > dfr]
+            df.columns = ["google"]
+            guardian = get_guardian_articles(keyword)
+            guardian.columns = ["guardian"]
+            df = df.join(guardian)
+            nyt= get_nyt_articles(keyword)
+            nyt.columns = ["nyt"]
+            df = df.join(nyt)
+            df.to_sql("searchdata",engine,if_exists='append',index_label="date", method='multi')
+            return True
+        else: 
+            return False
+    except:
+        return False

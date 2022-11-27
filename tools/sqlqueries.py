@@ -11,6 +11,7 @@ def get_average(rank):
             number from 1 to 20 ordered by monthly volume search or query
     Returns a dic with {query, avg, fromdate, todate}
     '''
+    engine.connect()
     query = """
             SELECT query, avgsearch AS avg, fromdate, todate 
             FROM gvolume
@@ -37,6 +38,7 @@ def ins_average(q, avg, fr, to, rank=None):
         fr:
 
     '''
+    engine.connect()
     ############ ADD DATA VALIDATION
     # checking if keword already exists
     query = f"SELECT * FROM gvolume WHERE query = '{q}'"
@@ -97,12 +99,22 @@ def remove_duplicates(database):
         return False
 
 def query_list(database):
+    '''
+    Gets the list of keywords in any of the databases.
+    Arguments:
+        database: str.
+            Database name
+    Returns:
+        list. all the keywords stored in the database.
+    '''
+    engine.connect()
     query = f"SELECT DISTINCT query FROM {database};"
     unique = engine.execute(query).fetchall()
     return [query for ls in unique for query in ls]
 
 def get_standard(rank):
     ###### ADD DATE FILTER AND ERROR HANDELING
+    engine.connect()
     query =f'''
     SELECT `date`, searchvolume, `query` 
     FROM standardvolume
