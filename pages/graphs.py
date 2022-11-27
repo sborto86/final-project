@@ -27,7 +27,7 @@ fig.update_layout(
     paper_bgcolor='rgba(0,0,0,0)',
     plot_bgcolor='rgba(0,0,0,0)'
 )
-fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='lightgrey')
+fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='lightgrey', tickvals=[10000000, 1000000, 100000, 10000,1000, 100,])
 fig.update_traces(line=dict(width=3))
 st.plotly_chart(fig)
 

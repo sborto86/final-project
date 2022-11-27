@@ -66,7 +66,7 @@ def get_nyt_articles(query, datefrom=None, dateto=None):
             news_list=[{"date": news['pub_date'].split("T")[0],"text": news['abstract']+news['headline']['main']+news['headline']['print_headline']+news['lead_paragraph']} for news in content["response"]["docs"]]
             df = pd.DataFrame(news_list)
             df['date'] = df["date"].astype('datetime64[ns]')
-            df.to_sql("nytarchive",engine, if_exists='append', method='multi')
+            df.to_sql("nytarchive",engine,index=False, if_exists='append', method='multi')
             today = today - relativedelta(months=1)
     #quering the database
     sqlquery = f'''SELECT `date`, COUNT(`text`) FROM nytarchive

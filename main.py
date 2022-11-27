@@ -1,5 +1,5 @@
 import streamlit as st
-from src.plot import areaplot_google
+from src.plot import areaplot_google, areaplot_news
 from src.form_handler import kw_search
 
 
@@ -22,5 +22,7 @@ submit = form.form_submit_button('Search')
 
 if submit:
     df= kw_search(keyword)
-    fig = areaplot_google(df)
+    fig = areaplot_google(df, keyword)
     st.plotly_chart(fig)
+    fig2= areaplot_news(df, keyword)
+    st.plotly_chart(fig2)

@@ -1,4 +1,4 @@
-from tools.sqlqueries import get_standard, get_average
+from tools.sqlqueries import get_standard, get_average, query_list
 from tools.google import trend_to_absolute
 from pytrends.request import TrendReq
 from pytrends import dailydata
@@ -22,6 +22,15 @@ def find_standard(keyword):
                     volume: int.
                     }        
     '''
+    standard_list = query_list("gvolume")
+    if keyword in standard_list:
+        engine.connect()
+        query = f"SELECT volumerank FROM gvolume WHERE query = '{keyword}'"
+        res = engine.execute(query).first()
+        rank = res[0]
+        volume_st = get_standard(rank)
+        date_st = f'{volume_st[0].year}-{volume_st[0].month}-{volume_st[0].day}'
+        return {'date': date_st, 'volume': volume_st[1]}
     isstandard=False
     loop=0
     rank = 6
