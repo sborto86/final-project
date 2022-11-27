@@ -89,7 +89,7 @@ def remove_duplicates(database):
             SELECT MIN({id}) AS MinID
             FROM {database}
             GROUP BY query, 
-                    date,
+                    `date`,
         );
         '''
     try: 
