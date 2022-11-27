@@ -59,9 +59,9 @@ def get_google(keyword):
     df = df[[keyword]]
     # getting estimated search value
     standard = find_standard(keyword)
+    if df[keyword][standard['date']] == 0:
+        df[keyword][standard['date']] = 0.9
     rel_vol = standard['volume']/df[keyword][standard['date']]
-    print(rel_vol)
-    print(df)
     #replacing 0 values for 0.9 
     df[keyword] = df[keyword].replace(to_replace=0, value = 0.9)
     df[keyword] = df[keyword]*rel_vol
@@ -80,7 +80,7 @@ def add_keyword(keyword):
     guardian.columns = ["guardian"]
     df = df.join(guardian)
     nyt= get_nyt_articles(keyword)
-    nyt.columns = ["nytimes"]
+    nyt.columns = ["nyt"]
     df = df.join(nyt)
     df.to_sql("searchdata",engine,if_exists='append',index_label="date", method='multi')
     return df

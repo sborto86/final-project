@@ -75,9 +75,6 @@ def get_nyt_articles(query, datefrom=None, dateto=None):
             GROUP BY `date`
             '''
     df = pd.read_sql(sqlquery,engine)
-    if len(df)==0:
-        df["articles"] = [0,0]
-        df["date"]=[datefrom, dateto]
     idx = pd.date_range(datefrom, dateto)
     df = df.set_index(df['date'])
     df.index = pd.DatetimeIndex(data=df.index)
