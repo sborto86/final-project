@@ -7,3 +7,4 @@ SQLAlchemy==1.4.39
 streamlit==1.15.1
 tqdm==4.64.1
 Unidecode==1.2.0
+mysql-connector-python==8.0.31
