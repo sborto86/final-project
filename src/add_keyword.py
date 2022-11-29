@@ -4,6 +4,7 @@ from pytrends.request import TrendReq
 from pytrends import dailydata
 from tools.guardian import get_guardian_articles
 from tools.nytimes import get_nyt_articles
+from pytrends.exceptions import ResponseError
 if "datetime" not in dir():
     import datetime
     from dateutil.relativedelta import relativedelta
@@ -34,7 +35,7 @@ def find_standard(keyword):
     isstandard=False
     loop=0
     rank = 6
-    while isstandard == False or rank == 12 or rank==1 or loop < 5:
+    while isstandard == False or rank < 10 or rank > 1 or loop < 5:
         stdic = get_average(rank)
         standard = stdic['query']
         fr = f'{stdic["fromdate"].year}-{stdic["fromdate"].month}-{stdic["fromdate"].day}'
@@ -73,8 +74,16 @@ def get_google(keyword):
     dfr = datetime.datetime.now() - relativedelta(years=2)
     dto = datetime.datetime.now()
     #fetching relative google data
-    df = dailydata.get_daily_data(keyword, int(dfr.year), int(dfr.month), int(dto.year),int(dto.month))
-    df = df[[keyword]]
+    try:
+        df = dailydata.get_daily_data(keyword, int(dfr.year), int(dfr.month), int(dto.year),int(dto.month))
+        df = df[[keyword]]
+    except ResponseError:
+        try:
+            df1 = dailydata.get_daily_data(keyword, int(dfr.year), int(dfr.month), int(dto.year-1),int(dto.month))
+            df2 = dailydata.get_daily_data(keyword, int(dfr.year+1), int(dfr.month), int(dto.year),int(dto.month))
+            df = pd.concat([df1, df2], ignore_index=True).reset_index()
+        except ResponseError:
+            return "Google has bloqued your request imposible to retrive the historical data"
     # getting estimated search value
     standard = find_standard(keyword)
     if df[keyword][standard['date']] == 0:
