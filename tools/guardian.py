@@ -81,7 +81,7 @@ def get_guardian_articles(query, datefrom=None, dateto=None):
                         print(f"Unable to fully retrieve articles from {query}, stopped at {day.year}-{day.month}-{day.day}: Error {response.status_code}: {response.text}")
                         return articles
                 except:
-                        print("Network error please check your internet connection, stopped at {day.year}-{day.month}-{day.day}")
+                        print(f"Network error please check your internet connection, stopped at {day.year}-{day.month}-{day.day}")
                         return articles
         else:
             dic_dates = {}

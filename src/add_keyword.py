@@ -31,7 +31,7 @@ def find_standard(keyword):
         res = engine.execute(query).first()
         rank = res[0]
         volume_st = get_standard(rank)
-        date_st = f'{volume_st[0].year}-{volume_st[0].month}-{volume_st[0].day}'
+        date_st = f'{volume_st[0].year}-{volume_st[0].strftime("%m")}-{volume_st[0].strftime("%d")}'
         return {'date': date_st, 'volume': volume_st[1]}
     isstandard=False
     loop=0
@@ -39,8 +39,8 @@ def find_standard(keyword):
     while isstandard == False or rank < 10 or rank > 1 or loop < 5:
         stdic = get_average(rank)
         standard = stdic['query']
-        fr = f'{stdic["fromdate"].year}-{stdic["fromdate"].month}-{stdic["fromdate"].day}'
-        to = f'{stdic["todate"].year}-{stdic["todate"].month}-{stdic["todate"].day}'
+        fr = f'{stdic["fromdate"].year}-{stdic["fromdate"].strftime("%m")}-{stdic["fromdate"].strftime("%d")}'
+        to = f'{stdic["todate"].year}-{stdic["todate"].strftime("%m")}-{stdic["todate"].strftime("%d")}'
         kws = [standard, keyword]
         pytrend = TrendReq()
         pytrend.build_payload(kw_list=kws, timeframe=f'{fr} {to}')
@@ -59,7 +59,7 @@ def find_standard(keyword):
             isstandard=True
         loop += 1
     volume_st = get_standard(rank)
-    date_st = f'{volume_st[0].year}-{volume_st[0].month}-{volume_st[0].day}'
+    date_st = f'{volume_st[0].year}-{volume_st[0].strftime("%m")}-{volume_st[0].strftime("%d")}'
     kw_vol = (df[keyword][date_st]*volume_st[1])/df[standard][date_st]
     return {'date': date_st, 'volume': kw_vol} 
 
@@ -101,6 +101,9 @@ def add_keyword(keyword):
     Return: panadas.DataFrame
     '''
     df = get_google(keyword)
+    # Check if error in retriving keyword
+    if type(df)== str:
+        return df
     df.columns = ["google"]
     df["query"] = keyword
     guardian = get_guardian_articles(keyword)
@@ -130,10 +133,10 @@ def update_keyword(keyword):
         # getting dates for the queries
         last_update = engine.execute(sqlquery).fetchall()[0][0]
         today = datetime.date.today()
-        dfr = f'{last_update.year}-{last_update.month}-{last_update.day}'
-        dto = f'{today.year}-{today.month}-{today.day}'
-        laup= last_update - -datetime.timedelta(days=10)
-        dfr2 = f'{laup.year}-{laup.month}-{laup.day}'
+        dfr = f'{last_update.year}-{last_update.strftime("%m")}-{last_update.strftime("%d")}'
+        dto = f'{today.year}-{today.strftime("%m")}-{today.strftime("%d")}'
+        laup= last_update - datetime.timedelta(days=10)
+        dfr2 = f'{laup.year}-{laup.strftime("%m")}-{laup.strftime("%d")}'
         if today-datetime.timedelta(days=7) > last_update:
             # get search volume to standarize
             sqlquery = f'''

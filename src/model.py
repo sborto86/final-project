@@ -64,7 +64,13 @@ def news_peaks(query):
 
 def year_prediction(query, sus_news=True):
     '''
-    
+    Predicts one year of google search volume for a given keyword
+    Arguments:
+        query: str.
+            keyword to predict
+        sus_news: bool (Default: True)
+            sustract from the modeling the peaks in published news about the keyword
+    Returns: List of matplotlib and plotty figures (figs)
     '''
     #getting the search data from the sql database
     engine.connect()
