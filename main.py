@@ -1,6 +1,7 @@
 import streamlit as st
 from src.plot import areaplot_google, areaplot_news
 from src.form_handler import kw_search
+from src.model import year_prediction
 
 
 st.set_page_config(
@@ -26,3 +27,10 @@ if submit:
     st.plotly_chart(fig)
     fig2= areaplot_news(df, keyword)
     st.plotly_chart(fig2)
+    st.header("Prediction Models")
+    figures = year_prediction(keyword)
+    st.subheader("One Year Prediction")
+    st.plotly_chart(figures[2])
+    st.subheader("Trends and Sesonality")
+    st.plotly_chart(figures[3])
+    
