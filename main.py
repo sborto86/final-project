@@ -26,7 +26,7 @@ if submit:
         st.write("Please insert a keyword or a short term (maximum 3 words)")
     st.header("Historical Data")
     df= kw_search(keyword)
-    if df == str:
+    if type(df) == str:
         st.write(f'Sorry there was an error retrieving the historical data: {df}')
     else:
         fig = areaplot_google(df, keyword)
