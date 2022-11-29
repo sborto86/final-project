@@ -23,8 +23,9 @@ def find_standard(keyword):
                     volume: int.
                     }        
     '''
+    engine.connect()
     standard_list = query_list("gvolume")
-    if keyword in standard_list:
+    if keyword in standard_list or keyword.lower() in standard_list:
         engine.connect()
         query = f"SELECT volumerank FROM gvolume WHERE query = '{keyword}'"
         res = engine.execute(query).first()
@@ -34,7 +35,7 @@ def find_standard(keyword):
         return {'date': date_st, 'volume': volume_st[1]}
     isstandard=False
     loop=0
-    rank = 6
+    rank = 5
     while isstandard == False or rank < 10 or rank > 1 or loop < 5:
         stdic = get_average(rank)
         standard = stdic['query']
@@ -78,12 +79,7 @@ def get_google(keyword):
         df = dailydata.get_daily_data(keyword, int(dfr.year), int(dfr.month), int(dto.year),int(dto.month))
         df = df[[keyword]]
     except ResponseError:
-        try:
-            df1 = dailydata.get_daily_data(keyword, int(dfr.year), int(dfr.month), int(dto.year-1),int(dto.month))
-            df2 = dailydata.get_daily_data(keyword, int(dfr.year+1), int(dfr.month), int(dto.year),int(dto.month))
-            df = pd.concat([df1, df2], ignore_index=True).reset_index()
-        except ResponseError:
-            return "Google has bloqued your request imposible to retrive the historical data"
+        return "Google has bloqued your request imposible to retrive the historical data, try it again after some minutes"
     # getting estimated search value
     standard = find_standard(keyword)
     if df[keyword][standard['date']] == 0:
