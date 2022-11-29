@@ -33,7 +33,7 @@ def news_peaks(query):
         start = df.index[i] - datetime.timedelta(days=3)
         end = df.index[i] + datetime.timedelta(days=3)
         test = df[(df.index > start) & (df.index < end)]
-        if test["news"].mean() > 3*mean_news:
+        if test["news"].mean() > 2*mean_news:
             dates.append(time[i])
     
     # Defining periods of the peaks:
@@ -75,7 +75,7 @@ def year_prediction(query, sus_news=True):
     dfsql.index = pd.DatetimeIndex(dfsql.index)
     #generating dataframe for modeling:
     min_search = dfsql['google'].min()/100 #defining a bootom for the model prediction
-    max_search = dfsql['google'].max()*100 #defining a maximum for the model prediction
+    max_search = dfsql['google'].max()*2 #defining a maximum for the model prediction
     df = pd.DataFrame()
     df['y']=dfsql['google']
     df['ds']=dfsql.index
@@ -85,7 +85,7 @@ def year_prediction(query, sus_news=True):
     if sus_news:
         peaks = news_peaks(query)
     # modeling
-    if sus_news and peaks:
+    if sus_news and type(peaks)==pd.core.frame.DataFrame:
         model = Prophet(holidays=peaks, growth='logistic')
     else:
         model = Prophet(growth='logistic')

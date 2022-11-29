@@ -32,5 +32,5 @@ if submit:
     st.subheader("One Year Prediction")
     st.plotly_chart(figures[2])
     st.subheader("Trends and Sesonality")
-    st.plotly_chart(figures[3])
+    st.plotly_chart(figures[3], use_container_width=600)
     
