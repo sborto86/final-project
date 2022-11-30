@@ -37,7 +37,7 @@ def find_standard(keyword):
     isstandard=False
     loop=0
     rank = 5
-    while isstandard == False or rank < 10 or rank > 1 or loop < 5:
+    while isstandard == False and rank < 10 and rank > 1 and loop < 5:
         stdic = get_average(rank)
         standard = stdic['query']
         fr = f'{stdic["fromdate"].year}-{stdic["fromdate"].strftime("%m")}-{stdic["fromdate"].strftime("%d")}'
