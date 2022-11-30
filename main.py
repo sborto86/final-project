@@ -25,6 +25,7 @@ st.image('img/seo.png')
 show_pages([
     Page ("main.py", "Keyword Research Tool", "📉"),
     Page ("pages/about.py", "About the Project", ":grey_question:"),
+    Page ("pages/installation.py", "How to Install and Deploy", "⚙️")
 ])
 
 form = st.form(key='keyword-input')
