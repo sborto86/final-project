@@ -3,10 +3,9 @@ from src.plot import areaplot_google, areaplot_news
 from src.form_handler import kw_search, keyword_val
 from src.model import year_prediction
 from st_pages import Page, show_pages, add_page_title
-from PIL import Image
+import streamlit.components.v1 as components
 import pandas as pd
 
-home = Image.open("./img/home.ico")
 st.set_page_config(
      page_title="Keyword Research Tool",
      page_icon="📉",
@@ -17,14 +16,16 @@ st.set_page_config(
          'About': "https://github.com/sborto86/final-project"
      }
  )
+
+st.title("A Simple Keyword Research Tool")
+st.image('img/seo.png')
+
 ### Setting pages names:
 
 show_pages([
-    Page ("main.py", "Home", "🏚️"),
-    Page ("pages/graphs.py", "Graphs", "📉"),
+    Page ("main.py", "Keyword Research Tool", "📉"),
+    Page ("pages/about.py", "About the Project", ":grey_question:"),
 ])
-
-st.header("Keyword Research")
 
 form = st.form(key='keyword-input')
 keyword = form.text_input('Enter a keyword or short term')
@@ -48,3 +49,31 @@ if submit:
         st.plotly_chart(figures[3], use_container_width=600)
     else:
         st.write(f'Sorry there was an error retrieving the historical data: {df}')
+
+# Adding some CSS
+
+st.markdown('''
+                <style>
+                    .css-1v0mbdj {
+                        margin: auto;
+                        }
+                    h1 {
+                        text-align: center;
+                        color: white;
+                        padding-top: 1.5rem;
+                        background-color: #2f8ad3;
+                        margin: revert;
+                    }
+                    .css-18e3th9 {
+                        padding: 1rem 1rem 10rem;
+                    }
+                    .css-12ttj6m {
+                        background-color: #2f8ad3;
+                    }
+                    .css-184tjsw p {
+                        font-size: 18px;
+                        color: white;
+                        font-weight: 700;
+                    }
+                </style>
+                ''', unsafe_allow_html=True)

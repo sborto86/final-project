@@ -30,7 +30,7 @@ def kw_search (keyword):
         test = add_keyword(keyword)
         ## Check for error
         if type(test) == str:
-            return str
+            return df
     else:
         # update_keyword(keyword)
         pass # NOT TESTED YET

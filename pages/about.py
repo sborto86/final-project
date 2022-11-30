@@ -6,10 +6,11 @@ if "px" not in dir():
 if "st" not in dir():
     import streamlit as st
 import streamlit.components.v1 as components
+st.title("About the Project")
+st.image("img/app-schema.png")
 
-st.title("Google Search Volume Standardization")
-
-st.header("Keywords used as standard to calculate google search volume")
+st.header("Google Search Volume Standardization")
+st.subheader("Keywords used as standard to calculate google search volume")
 
 engine.connect()
 query='''
@@ -31,7 +32,7 @@ fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='lightgrey', tickvals=[10
 fig.update_traces(line=dict(width=3))
 st.plotly_chart(fig)
 
-st.header("Google Trends Data")
+st.subheader("Google Trends Data")
 
 components.html(''' <script type="text/javascript" src="https://ssl.gstatic.com/trends_nrtr/3140_RC01/embed_loader.js"></script> 
                 <script type="text/javascript"> trends.embed.renderExploreWidget("TIMESERIES", 
