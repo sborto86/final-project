@@ -28,6 +28,12 @@ st.markdown('''## Table of contents
 4. <a href="#how-it-works">How it works?</a>
     - <a href="#data-acquisition">Data acquisition</a>
     - <a href="#data-processing">Data Processing</a>
+    - <a href="#creating-standards">Creating standards</a>
+    - <a href="#getting-the-historical-data">Getting the historical data</a>
+    - <a href="#getting-everything-toghether">Getting everything toghether</a>
+5. <a href="#modeling-and-prediction">Modeling and prediction</a>
+6. <a href="#future-improvements">Future Improvements</a>
+
 <h2>Background</h2>
 
 To design a good SEO strategy, access to big amounts of data is essential. However, access to quality data is getting harder and harder.
@@ -249,3 +255,13 @@ st.plotly_chart(fig2)
 figures = year_prediction('ukraine')
 st.plotly_chart(figures[2])
 st.plotly_chart(figures[3], use_container_width=600)
+
+st.markdown('''
+<h2>Future Improvements</h2>
+
+1. **Improve speed**:  Implement asynchronous calls by modifying the pytrends library to work with threads and use a random IP from a proxy list (to avoid being blocked by google).
+
+2. **Improve stability**: The code has been written with a limited amount of time and might need some debugging processes.
+
+3. **Include other sources of data** to get better estimations of searches and news trends.         
+            ''', unsafe_allow_html=True)
