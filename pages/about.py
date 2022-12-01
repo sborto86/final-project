@@ -6,6 +6,8 @@ if "px" not in dir():
 if "st" not in dir():
     import streamlit as st
 import streamlit.components.v1 as components
+from src.plot import areaplot_google, areaplot_news
+from src.form_handler import kw_search, keyword_val
 
 st.markdown('''
             <style>
@@ -90,7 +92,7 @@ st.markdown('''<h3>Data Processing</h3>
             
 <h4>1. Getting Google trends data</h4>
             
-<strong>First let's see what google trends offers us</strong>:
+**First let's see what google trends offers us**:
 ''', unsafe_allow_html=True)
 
 components.html('''<script type="text/javascript" src="https://ssl.gstatic.com/trends_nrtr/3140_RC01/embed_loader.js"></script> 
@@ -153,3 +155,66 @@ fig.update_layout(
 fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='lightgrey', tickvals=[10000000, 1000000, 100000, 10000,1000, 100,])
 fig.update_traces(line=dict(width=3))
 st.plotly_chart(fig)
+
+st.markdown(''' 
+Once these standards are created, we can proceed to extrapolate the absolute volume data of any keyword.
+
+<h4>4. Getting the historical data</h4>
+To get the calculated absolute search volume of a new keyword, the following process is going to performed:
+
+1. **Find the most silimar standard**: By comparing each standard and the keyword in Google Trends we get the standard that have a similar search volume than the keyword.
+
+2. **Convert the relative volume to absolute volume**: We use the standard to extrapolate the keyword search volume.
+
+3. **Retrive the historical data**: Once we have the search volume from the window of the standards (January to August 2022), we get the last two years historical data for the keyword from Google Trends (relative data). 
+
+4. **Obtain the absolute historical data** : Finally we use the absolute data obtained in the second step to calculate the historical data.
+            
+For example if search for "pizza" we get the following result:
+            ''', unsafe_allow_html=True)
+engine.connect()
+query='''
+    SELECT * FROM searchdata
+    WHERE query = 'pizza';
+    '''
+df2 = pd.read_sql(query,engine)
+fig = px.line(df2, x='date', y="google")
+fig.update_layout(
+    title='Daily Google Search Volume',
+    xaxis_title="Date",
+    yaxis_title="Search Volume",
+    legend_title_text='Keyword',
+    title_x=0.5,
+    paper_bgcolor='rgba(0,0,0,0)',
+    plot_bgcolor='rgba(0,0,0,0)'
+)
+fig.update_traces(line=dict(width=3))
+st.plotly_chart(fig)
+
+st.markdown('''
+Now that we have the google historical data we can proceed to scrape the newspapers (The Guardian and The New York Times)
+
+The process is simple we check the number of news published every day that the keyword is found in the headline or the summary. 
+
+Using the same example as before we obtain something like this:            
+            ''', unsafe_allow_html=True)
+
+engine.connect()
+query='''
+    SELECT `date`, `guardian`, `nyt`, `query` FROM searchdata
+    WHERE query = 'pizza';
+    '''
+df3 = pd.read_sql(query,engine)
+st.dataframe(df3)
+st.markdown('''
+<h4>5. Getting everything toghether</h4>
+
+After putting all the data together, we are ready to proceed to the next step, forecasting.
+
+But first, let's see another example, if we search for Covid-19:
+''', unsafe_allow_html=True)
+df4= kw_search('covid-19')
+fig = areaplot_google(df4, 'covid-19')
+st.plotly_chart(fig)
+fig2= areaplot_news(df4, 'covid-19')
+st.plotly_chart(fig2)
