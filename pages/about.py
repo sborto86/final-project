@@ -19,7 +19,7 @@ st.markdown('''
             ''',unsafe_allow_html=True)
 
 st.title("About the Project")
-
+st.image("img/code.png")
 st.markdown('''## Table of contents
 
 1. <a href="#background">Background</a>
