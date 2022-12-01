@@ -42,7 +42,7 @@ if submit:
     tend = time.time()
     
     if type(df) == pd.core.frame.DataFrame:
-        st.success(f"Hitorical data retrived succefully in {int((tstart-tend)/60)} minutes and {int((tstart-tend)%60)} seconds")
+        st.success(f"Hitorical data retrived succefully in {int((tend-tstart)/60)} minutes and {int((tend-tstart)%60)} seconds")
         st.header("Historical Data")
         fig = areaplot_google(df, keyword)
         st.plotly_chart(fig)
