@@ -7,7 +7,8 @@ if "st" not in dir():
     import streamlit as st
 import streamlit.components.v1 as components
 from src.plot import areaplot_google, areaplot_news
-from src.form_handler import kw_search, keyword_val
+from src.form_handler import kw_search
+from src.model import year_prediction
 
 st.markdown('''
             <style>
@@ -218,3 +219,33 @@ fig = areaplot_google(df4, 'covid-19')
 st.plotly_chart(fig)
 fig2= areaplot_news(df4, 'covid-19')
 st.plotly_chart(fig2)
+st.markdown('''
+As we can see here there is a good correlation between the peaks of news published and the peaks of the searches in google.
+
+Looks like we are on the right track...
+
+<h3>Modeling and prediction</h3>
+''', unsafe_allow_html=True)
+st.image("img/prophet.png")
+
+st.markdown('''
+In order, to fit our data into a model and perform forecasting the Facebook Prophet algorithm is used. There are sevral reasons to choose this algorithm, the main reasons are exposed bellow:
+
+1. **It is fast**: We need a model that don't delay to much the processing time as the web scrapping process is already slow.
+
+2. **It is less sensible to outliers than other models**: Compare to other predictive models is less to abnormal peaks in search volume (outliers)
+
+3. **Good predicting yearly and weekly seasonability**: The algorithm was designed specially to predict seasonability,
+
+4. **Can ignore periods of data**: This is one of the most important features to choose this model. As we want to exclude the periods where peaks are detected on news.
+
+But let's see one example, if we search for Ukraine we obtain the following results:
+            ''')
+df5= kw_search('ukraine')
+fig = areaplot_google(df5, 'ukraine')
+st.plotly_chart(fig)
+fig2= areaplot_news(df5, 'ukraine')
+st.plotly_chart(fig2)
+figures = year_prediction('ukraine')
+st.plotly_chart(figures[2])
+st.plotly_chart(figures[3], use_container_width=600)
