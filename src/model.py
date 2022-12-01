@@ -82,6 +82,8 @@ def year_prediction(query, sus_news=True):
     #generating dataframe for modeling:
     min_search = dfsql['google'].min()/100 #defining a bootom for the model prediction
     max_search = dfsql['google'].max()*2 #defining a maximum for the model prediction
+    if max_search == 0:
+        max_search = 1000
     df = pd.DataFrame()
     df['y']=dfsql['google']
     df['ds']=dfsql.index
