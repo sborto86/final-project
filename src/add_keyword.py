@@ -45,7 +45,10 @@ def find_standard(keyword):
         kws = [standard, keyword]
         pytrend = TrendReq()
         pytrend.build_payload(kw_list=kws, timeframe=f'{fr} {to}')
-        df = pytrend.interest_over_time()
+        try: 
+            df = pytrend.interest_over_time()
+        except:
+            isstandard=True
         stsum = df[standard].sum()
         kwsum = df[keyword].sum()
         if kwsum == 0:
@@ -59,7 +62,7 @@ def find_standard(keyword):
         else:
             isstandard=True
         loop += 1
-        time.sleep(1)
+        time.sleep(2)
         print(f"standard rank: {rank}")
     volume_st = get_standard(rank)
     date_st = f'{volume_st[0].year}-{volume_st[0].strftime("%m")}-{volume_st[0].strftime("%d")}'

@@ -40,10 +40,9 @@ if submit:
     with st.spinner("Retrieving historical data, please wait..."):
         df= kw_search(keyword)
     tend = time.time()
-    time_pass= tend-tstart
     
     if type(df) == pd.core.frame.DataFrame:
-        st.success(f"Hitorical data retrived succefully in {time_pass} seconds")
+        st.success(f"Hitorical data retrived succefully in {int((tstart-tend)/60)} minutes and {int((tstart-tend)%60)} seconds")
         st.header("Historical Data")
         fig = areaplot_google(df, keyword)
         st.plotly_chart(fig)
