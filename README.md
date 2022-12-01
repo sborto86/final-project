@@ -8,6 +8,14 @@
 2. <a href="#section-2">About this repository</a>
 3. <a href="#section-3">Objectives</a>
 4. <a href="#section-4">Installation and requirements</a>
+5. <a href="#section-5">Limitations</a>
+6. <a href="#section-6">How it works?</a>
+    - <a href="#section-6a">Data Acquisition</a>
+    - <a href="#section-6b">Data Processing</a>
+    - <a href="#section-6c">Data Storage</a>
+    - <a href="#section-6d">Machine Learning</a>
+    - <a href="#section-6e">Web Application</a>
+7. <a href="#section-6">Future Improvements</a>
 
 <h2 id="section-1">Background</h2>
 
@@ -91,5 +99,54 @@ python nyarchive.py
 
 7. Finally to deploy the application online, just follow the [instructions here](https://docs.streamlit.io/streamlit-cloud/get-started/deploy-an-app)
 
+<h2 id="section-6">Limitations</h2>
 
+Most of the limitations of this application come from the difficulty of getting good and reliable data
+
+1. **News are only extracted from only two sources**, The Guardian and The New York Times
+
+2. **Google search data is global**, regional data is not abaviable
+
+3. **The application is optimized for English keywords**, other languages can be used, but the predictions will have a higher degree of inaccuracy.
+
+4. **Low search keywords will not generate results**,  the estimated lower limit of detection is about 1.000 - 2.000 searches per day.
+
+5. **Only short keywords are accepted** , maximum 3 words lengh are accepted.
+
+6. **The data acquisition might be slow**, 3 - 5 minutes per new  keyword.
+
+7. **The historical data is limited to two years**
+
+8. **Google might block the request**, the acquisition of data requires multiple calls to the google trends website that might trigger the firewall.
+
+9. **Search volume values are estimations**
+
+<h2 id="section-6">How it works?</h2>
+
+![seo tool schema](./img/app-schema.png)
+
+*A simple schema of the application structure*  
+
+<h3 id="section-6a">Data acquisition</h3>
+
+Sources of data used in this application:
+
+
+
+1. **Google Trends**: Web scrapping using the library pytrends.
+
+![google trends](./img/google.png)
+
+2. **The Guardian**: Live API calls.
+
+![The Guardian](./img/guardian.png)
+
+3. **The New York Times**: News archives of the last two years are stored in the database, and the missing data will be updated (if necessary) in every call.
+
+![The New York Times](./img/nyt.png)
+
+<h3 id="section-6b">Data Processing</a>
+<h3 id="section-6c">Data Storage</a>
+<h3 id="section-6d">Machine Learning</a>
+<h3 id="section-6e">Web Application</a>
 

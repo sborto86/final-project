@@ -5,6 +5,7 @@ from src.model import year_prediction
 from st_pages import Page, show_pages, add_page_title
 import streamlit.components.v1 as components
 import pandas as pd
+import time
 
 st.set_page_config(
      page_title="Keyword Research Tool",
@@ -35,9 +36,15 @@ submit = form.form_submit_button('Search')
 if submit:
     if not keyword_val(keyword):
         st.write("Please insert a keyword or a short term (maximum 3 words)")
-    st.header("Historical Data")
-    df= kw_search(keyword)
+    tstart = time.time()
+    with st.spinner("Retrieving historical data, please wait..."):
+        df= kw_search(keyword)
+    tend = time.time()
+    time_pass= tend-tstart
+    
     if type(df) == pd.core.frame.DataFrame:
+        st.success(f"Hitorical data retrived succefully in {time_pass} seconds")
+        st.header("Historical Data")
         fig = areaplot_google(df, keyword)
         st.plotly_chart(fig)
         fig2= areaplot_news(df, keyword)
@@ -49,7 +56,7 @@ if submit:
         st.subheader("Trends and Seasonality")
         st.plotly_chart(figures[3], use_container_width=600)
     else:
-        st.write(f'Sorry there was an error retrieving the historical data: {df}')
+        st.error(f'Sorry there was an error retrieving the historical data: {df}')
 
 # Adding some CSS
 

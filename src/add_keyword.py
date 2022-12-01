@@ -89,6 +89,7 @@ def get_google(keyword):
         df[keyword][standard['date']] = 0.9
     rel_vol = standard['volume']/df[keyword][standard['date']]
     #replacing 0 values for 0.9 
+    df[keyword] = df[keyword].fillna(0)
     df[keyword] = df[keyword].replace(to_replace=0, value = 0.9)
     df[keyword] = df[keyword]*rel_vol
     df[keyword] = df[keyword].astype(int)
