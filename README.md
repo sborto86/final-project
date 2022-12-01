@@ -14,8 +14,7 @@
     - <a href="#section-6b">Data Processing</a>
     - <a href="#section-6c">Data Storage</a>
     - <a href="#section-6d">Machine Learning</a>
-    - <a href="#section-6e">Web Application</a>
-7. <a href="#section-6">Future Improvements</a>
+7. <a href="#section-7">Future Improvements</a>
 
 <h2 id="section-1">Background</h2>
 
@@ -42,6 +41,8 @@ Design an application that can be deployed online by anyone with only few comman
 The search behavior of the users is usually predictable and easy to forecast. However, sometimes there are sudden spikes in searches that affect the quality of the prediction models.
 
 This project pretends to show that we can combine, data extracted from the news and the historical behavior of the users, to improve the quality of the prediction models.
+
+You can see a working version of this repository in [this url](https://sborto86-final-project-main-7vdvv7.streamlit.app/).
 
 <h2 id="section-4">Installation and requirements</h2>
 
@@ -145,8 +146,108 @@ Sources of data used in this application:
 
 ![The New York Times](./img/nyt.png)
 
-<h3 id="section-6b">Data Processing</a>
-<h3 id="section-6c">Data Storage</a>
-<h3 id="section-6d">Machine Learning</a>
-<h3 id="section-6e">Web Application</a>
+<h3 id="section-6b">1. Data Processing</a>
+<h4>1. Getting Google trends data</h4>
+            
+**First let's see what google trends offers us**:
+
+![plot](./img/plot1.png)
+
+The information that we obtain is only a weekly average relative to the maximum 
+
+<h4>2. From relative data to absolute data</h4>
+
+To convert from relative to absolute data, the information provided by Semrush (one of the most renowned SEO tools) was used.  
+
+![semrush](./img/semrush.png)
+
+You can read the full article by [clicking here](https://www.semrush.com/blog/most-searched-keywords-google/)
+
+The information we get from this article is the average monthly search of the term "youtube" from January through August 2022 (see bellow):
+
+![semrush](./img/semrush2.png)
+
+<h4>3. Creating standards</h4>
+
+Then with this information, we get an array of keywords from high-volume search keywords to reach the limit of detection of Google Trends:
+
+![google trends](./img/plot4.png)
+
+Finally, by performing successive pair comparisons we obtain an estimation of the absolute search volume of each keyword:
+
+![standards](./img/plot2.png)
+
+Once these standards are created, we can proceed to extrapolate the absolute volume data of any keyword.
+
+<h4>4. Getting the historical data</h4>
+To get the calculated absolute search volume of a new keyword, the following process is going to performed:
+
+1. **Find the most silimar standard**: By comparing each standard and the keyword in Google Trends we get the standard that have a similar search volume than the keyword.
+
+2. **Convert the relative volume to absolute volume**: We use the standard to extrapolate the keyword search volume.
+
+3. **Retrive the historical data**: Once we have the search volume from the window of the standards (January to August 2022), we get the last two years historical data for the keyword from Google Trends (relative data). 
+
+4. **Obtain the absolute historical data** : Finally we use the absolute data obtained in the second step to calculate the historical data.
+            
+For example if search for "pizza" we get the following result:
+
+![pizza](./img/plot3.png)
+
+Now that we have the google historical data we can proceed to scrape the newspapers (The Guardian and The New York Times)
+
+The process is simple we check the number of news published every day that the keyword is found in the headline or the summary. 
+
+Using the same example as before we obtain something like this:
+
+![pizza](./img/plot6.png)
+
+<h4>5. Getting everything toghether</h4>
+
+After putting all the data together, we are ready to proceed to the next step, forecasting.
+
+But first, let's see another example, if we search for Covid-19:
+
+![covid-19](./img/plot7.png)
+
+![covid-19](./img/plot8.png)
+
+As we can see here there is a good correlation between the peaks of news published and the peaks of the searches in google.
+
+Looks like we are on the right track...
+
+<h3 id="section-6c">Data Storage</h3>
+
+All the extracted and processed data is stored in a simple SQL database. The schema is shown below:
+
+![SQL](./img/sqldb.png)
+
+<h3 id="section-6d">Machine Learning</h3>
+
+![machine learning](./img/prophet.png)
+
+In order, to fit our data into a model and perform forecasting the Facebook Prophet algorithm is used. There are sevral reasons to choose this algorithm, the main reasons are exposed bellow:
+
+1. **It is fast**: We need a model that don't delay to much the processing time as the web scrapping process is already slow.
+
+2. **It is less sensible to outliers than other models**: Compare to other predictive models is less to abnormal peaks in search volume (outliers)
+
+3. **Good predicting yearly and weekly seasonability**: The algorithm was designed specially to predict seasonability,
+
+4. **Can ignore periods of data**: This is one of the most important features to choose this model. As we want to exclude the periods where peaks are detected on news.
+
+But let's see one example, if we search for Ukraine we obtain the following results:
+
+![covid-19](./img/plot9.png)
+
+![covid-19](./img/plot10.png)
+
+<h2 id="section-7">Future Improvements</h2>
+
+1. **Improve speed**:  Implement asynchronous calls by modifying the pytrends library to work with threads and use a random IP from a proxy list (to avoid being blocked by google).
+
+2. **Improve integrity**: The code has been written with a limited amount of time and might need some debugging processes.
+
+3. **Include other sources of data** to get better search estimations and trends from the news.         
+
 

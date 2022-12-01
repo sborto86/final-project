@@ -31,7 +31,8 @@ st.markdown('''## Table of contents
     - <a href="#creating-standards">Creating standards</a>
     - <a href="#getting-the-historical-data">Getting the historical data</a>
     - <a href="#getting-everything-toghether">Getting everything toghether</a>
-5. <a href="#modeling-and-prediction">Modeling and prediction</a>
+    - <a href="#data-storage">Data Storage</a>
+    - <a href="#modeling-and-prediction">Modeling and prediction</a>
 6. <a href="#future-improvements">Future Improvements</a>
 
 <h2>Background</h2>
@@ -230,6 +231,14 @@ As we can see here there is a good correlation between the peaks of news publish
 
 Looks like we are on the right track...
 
+<h3 id="section-6c">Data Storage</h3>
+
+All the extracted and processed data is stored in a simple SQL database. The schema is shown below:
+''', unsafe_allow_html=True)
+
+st.image("img/sqldb.png")
+
+st.markdown('''
 <h3>Modeling and prediction</h3>
 ''', unsafe_allow_html=True)
 st.image("img/prophet.png")
