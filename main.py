@@ -36,26 +36,27 @@ submit = form.form_submit_button('Search')
 if submit:
     if not keyword_val(keyword):
         st.write("Please insert a keyword or a short term (maximum 3 words)")
-    tstart = time.time()
-    with st.spinner("Retrieving historical data, please wait..."):
-        df= kw_search(keyword)
-    tend = time.time()
-    
-    if type(df) == pd.core.frame.DataFrame:
-        st.success(f"Hitorical data retrived succefully in {int((tend-tstart)/60)} minutes and {int((tend-tstart)%60)} seconds")
-        st.header("Historical Data")
-        fig = areaplot_google(df, keyword)
-        st.plotly_chart(fig)
-        fig2= areaplot_news(df, keyword)
-        st.plotly_chart(fig2)
-        st.header("Prediction Models")
-        figures = year_prediction(keyword)
-        st.subheader("One Year Prediction")
-        st.plotly_chart(figures[2])
-        st.subheader("Trends and Seasonality")
-        st.plotly_chart(figures[3], use_container_width=600)
-    else:
-        st.error(f'Sorry there was an error retrieving the historical data: {df}')
+    else: 
+        tstart = time.time()
+        with st.spinner("Retrieving historical data, please wait..."):
+            df= kw_search(keyword)
+        tend = time.time()
+        
+        if type(df) == pd.core.frame.DataFrame:
+            st.success(f"Hitorical data retrived succefully in {int((tend-tstart)/60)} minutes and {int((tend-tstart)%60)} seconds")
+            st.header("Historical Data")
+            fig = areaplot_google(df, keyword)
+            st.plotly_chart(fig)
+            fig2= areaplot_news(df, keyword)
+            st.plotly_chart(fig2)
+            st.header("Prediction Models")
+            figures = year_prediction(keyword)
+            st.subheader("One Year Prediction")
+            st.plotly_chart(figures[2])
+            st.subheader("Trends and Seasonality")
+            st.plotly_chart(figures[3], use_container_width=600)
+        else:
+            st.error(f'Sorry there was an error retrieving the historical data: {df}')
 
 # Adding some CSS
 
