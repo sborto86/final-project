@@ -63,7 +63,7 @@ Pillow==9.4.0
 platformdirs @ file:///C:/ci_311/platformdirs_1676422658103/work
 plotly==5.14.1
 prompt-toolkit @ file:///C:/ci_311/prompt-toolkit_1676425940920/work
-prophet==1.1.1
+prophet==1.1.0
 protobuf==3.20.3
 psutil @ file:///C:/ci_311_rebuilds/psutil_1679005906571/work
 pure-eval @ file:///opt/conda/conda-bld/pure_eval_1646925070566/work
