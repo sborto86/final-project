@@ -39,12 +39,6 @@ ipython-genutils==0.2.0
 jedi==0.18.1
 Jinja2==3.1.2
 jsonschema==4.16.0
-jupyter-contrib-nbextensions==0.6.0
-jupyter-core==4.11.1
-jupyter-highlight-selected-word==0.2.0
-jupyter-nbextensions-configurator==0.5.0
-jupyter-server==1.21.0
-jupyter_client==7.4.2
 jupyterlab-pygments==0.2.2
 kiwisolver==1.4.4
 korean-lunar-calendar==0.3.1
