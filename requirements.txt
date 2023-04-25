@@ -28,7 +28,6 @@ future @ file:///C:/ci_311_rebuilds/future_1678998246262/work
 gitdb @ file:///tmp/build/80754af9/gitdb_1617117951232/work
 GitPython @ file:///C:/ci_311/gitpython_1677727002425/work
 greenlet==2.0.2
-hijri-converter==2.3.1
 holidays==0.23
 idna @ file:///C:/ci_311/idna_1676424932545/work
 importlib-metadata @ file:///C:/b/abs_20ndzb2j6v/croot/importlib-metadata_1678997085534/work
