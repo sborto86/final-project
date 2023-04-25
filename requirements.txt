@@ -24,7 +24,6 @@ pyarrow==11.0.0
 PyMeeus==0.5.12
 pyparsing==3.0.9
 pytrends==4.9.2
-pywin32==305.1
 SQLAlchemy==1.4.47
 st-pages==0.4.0
 streamlit==1.21.0
