@@ -51,9 +51,7 @@ matplotlib-inline @ file:///C:/ci_311/matplotlib-inline_1676425798036/work
 mkl-fft==1.3.1
 mkl-random @ file:///C:/ci_311/mkl_random_1676481991689/work
 mkl-service==2.4.0
-mysql==0.0.3
 mysql-connector-python==8.0.33
-mysqlclient==2.1.1
 nest-asyncio @ file:///C:/ci_311/nest-asyncio_1676423519896/work
 numexpr @ file:///C:/ci_311_rebuilds/numexpr_1679001276672/work
 numpy @ file:///C:/ci_311/numpy_and_numpy_base_1676426421739/work
