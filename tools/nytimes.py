@@ -46,8 +46,11 @@ def get_nyt_articles(query, datefrom=None, dateto=None):
             SELECT MAX(`date`) FROM nytarchive
             LIMIT 1'''
     last_update = engine.execute(sqlquery).fetchall()[0][0]
+    print(last_update)
+    
     today = datetime.date.today()
     if today > last_update:
+        print('Updating NYT database...')
         # Deleting records of the last update month
         stdate = datetime.date(last_update.year,last_update.month,1)
         sqlquery = f'''
@@ -58,7 +61,7 @@ def get_nyt_articles(query, datefrom=None, dateto=None):
         '''
         engine.execute(sqlquery)
         # Updating
-        mo_update = today.month - last_update.month + 1
+        mo_update = (relativedelta(today, last_update) + relativedelta(months=1)).months
         for i in range(mo_update):
             url = f'https://api.nytimes.com/svc/archive/v1/{today.year}/{today.month}.json?api-key={NY}'
             content = requests.get(url)
@@ -67,6 +70,7 @@ def get_nyt_articles(query, datefrom=None, dateto=None):
             df = pd.DataFrame(news_list)
             df['date'] = df["date"].astype('datetime64[ns]')
             df.to_sql("nytarchive",engine, index=False, if_exists='append', method='multi')
+            print ('Upadating NYT Database', today.month, today.year)
             today = today - relativedelta(months=1)
     #quering the database
     sqlquery = f'''SELECT `date`, COUNT(`text`) FROM nytarchive

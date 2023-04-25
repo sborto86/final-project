@@ -32,8 +32,7 @@ def kw_search (keyword):
         if type(test) == str:
             return test
     else:
-        # update_keyword(keyword)
-        pass # NOT TESTED YET
+        update_keyword(keyword)
     query = f'''
     SELECT * FROM searchdata
     WHERE query='{keyword}';
