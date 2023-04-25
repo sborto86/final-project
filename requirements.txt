@@ -56,7 +56,6 @@ mysql-connector-python==8.0.33
 mysqlclient==2.1.1
 nest-asyncio @ file:///C:/ci_311/nest-asyncio_1676423519896/work
 numexpr @ file:///C:/ci_311_rebuilds/numexpr_1679001276672/work
-numpy @ file:///C:/ci_311/numpy_and_numpy_base_1676426421739/work
 packaging @ file:///C:/b/abs_ed_kb9w6g4/croot/packaging_1678965418855/work
 pandas @ file:///C:/ci_311_rebuilds/pandas_1679004481142/work
 parso @ file:///opt/conda/conda-bld/parso_1641458642106/work
