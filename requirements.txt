@@ -1,4 +1,3 @@
-altair @ file:///tmp/build/80754af9/altair_1599835197802/work
 asttokens @ file:///opt/conda/conda-bld/asttokens_1646925590279/work
 attrs @ file:///C:/ci_311/attrs_1676422272484/work
 backcall @ file:///home/ktietz/src/ci/backcall_1611930011877/work
