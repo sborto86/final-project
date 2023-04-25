@@ -270,7 +270,7 @@ st.markdown('''
 
 1. **Improve speed**:  Implement asynchronous calls by modifying the pytrends library to work with threads and use a random IP from a proxy list (to avoid being blocked by google).
 
-2. **Improve stability**: The code has been written with a limited amount of time and might need some debugging processes.
+2. **Improve integrity**: The code has been written with a limited amount of time and might need some debugging processes.
 
-3. **Include other sources of data** to get better estimations of searches and news trends.         
+3. **Include other sources of data** to get better search estimations and trends from the news.         
             ''', unsafe_allow_html=True)
