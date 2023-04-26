@@ -63,7 +63,8 @@ def find_standard_new(keyword):
                 isstandard=True
             loop += 1
             time.sleep(3)
-        except:
+        except Exception as e:
+            print(e)
             result['error'] = True
             result['error_msg'] = "Google blocked the request during the find standard process"
             isstandard=True
@@ -86,16 +87,18 @@ def google_monthly(stdic):
     keyword= stdic['keyword']
     pytrends = TrendReq(hl='en-US', tz=360)
     kw_list=[keyword]
-    pytrends.build_payload(kw_list, timeframe='all')
+    try: 
+        pytrends.build_payload(kw_list, timeframe='all')
+    except Exception as e:
+        print('Error:', e)   
     df = pytrends.interest_over_time()
-    
-    #### Cakculate Months standard
+    #### Calculate Months standard
     
     months_st = relativedelta(stdic['to_date']+datetime.timedelta(days=+1), stdic['from_date'])
     total_vol = months_st.months * stdic['avg_vol']
     total_perc = df[(df.index.date <= stdic['to_date'])&(df.index.date >= stdic['from_date'])]
     total_perc = total_perc[keyword].sum()
-    if ref_vol > 0 and total_perc > 0:
+    if total_vol > 0 and total_perc > 0:
         ref_vol = total_vol/total_perc
     else: 
         return 'Error Calculating absolute data'
@@ -123,10 +126,11 @@ def get_google_new(keyword, from_date=None):
             month_volume = google_monthly(stdic)
             if type(month_volume) == str:
                 return month_volume
-        except:
-            return 'Google Trends has bloqued your request imposible to retrive the historical data, try it again after some minutes'
+        except Exception as e:
+            print(e)
+            return 'Google Trends has bloqued your request imposible to retrive the historical data (monthly realtive searches), try it again after some minutes'
     else:
-        return 'Google Trends has bloqued your request imposible to retrive the historical data, try it again after some minutes' 
+        return 'Google Trends has bloqued your request imposible to retrive the historical data (average monthly searches), try it again after some minutes' 
     #fetching google data
     time.sleep(3)
     pytrend = TrendReq(hl='en-US', tz=360)
@@ -147,7 +151,8 @@ def get_google_new(keyword, from_date=None):
         pytrend.build_payload(kw_list=kws, timeframe=f'{fr} {to}')
         try: 
             rel_data = pytrend.interest_over_time()
-        except:
+        except Exception as e:
+            print(e)
             break
         ### getting realtive to absolute
         if partial:
@@ -165,7 +170,7 @@ def get_google_new(keyword, from_date=None):
         dfr = dto_partial
         time.sleep(5)
     if df.empty:
-        return 'Google Trends has bloqued your request imposible to retrive the historical data, try it again after some minutes'       
+        return 'Google Trends has bloqued your request imposible to retrive the historical data (daily searches), try it again after some minutes'       
     return df
 
 def add_keyword(keyword):
