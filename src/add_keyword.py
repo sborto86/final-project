@@ -45,6 +45,7 @@ def find_standard_new(keyword):
         to = f'{stdic["todate"].year}-{stdic["todate"].strftime("%m")}-{stdic["todate"].strftime("%d")}'
         kws = [standard, keyword]
         pytrend.build_payload(kw_list=kws, timeframe=f'{fr} {to}')
+        resum=0
         try: 
             df = pytrend.interest_over_time()
             stsum = df[standard].sum()
@@ -66,7 +67,7 @@ def find_standard_new(keyword):
             result['error'] = True
             result['error_msg'] = "Google blocked the request during the find standard process"
             isstandard=True
-    if 'kwsum' not in dir():
+    if 'kwsum' == 0:
         return False
     kw_avg_vol = kwsum/stsum * stdic['avg']
     if kw_avg_vol > 0 and result['error'] == False:
@@ -76,7 +77,7 @@ def find_standard_new(keyword):
         engine.execute(query)
     result['keyword'] = keyword
     result ['from_date'] = stdic["fromdate"]
-    result ['to_date'] = stdic["fromdate"]
+    result ['to_date'] = stdic["todate"]
     result['avg_vol'] = kw_avg_vol
     return result
 
